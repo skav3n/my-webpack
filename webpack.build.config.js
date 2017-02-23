@@ -1,6 +1,10 @@
 const webpack = require('webpack');
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const extractLESS = new ExtractTextPlugin('style.css');
 
 module.exports = {
   context: path.resolve(__dirname, './src'),
@@ -13,8 +17,8 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.less$/,
-      use: ['style-loader', 'css-loader', 'less-loader'],
+      test: /\.less$/i,
+      use: extractLESS.extract(['css-loader', 'less-loader']),
     }, {
       test: /\.html$/,
       use: ['html-loader'],
@@ -51,6 +55,7 @@ module.exports = {
     port: 9000,
   },
   plugins: [
+    extractLESS,
     new HtmlWebpackPlugin({
       inject: true,
       template: './templates/index.html',
@@ -59,6 +64,11 @@ module.exports = {
       inject: true,
       filename: 'contact.html',
       template: './templates/contact.html',
+    }),
+    new CleanWebpackPlugin(['dist'], {
+      root: path.join(__dirname),
+      verbose: true,
+      dry: false,
     }),
   ],
 };
