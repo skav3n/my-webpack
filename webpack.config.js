@@ -1,8 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpackMerge = require('webpack-merge');
+const webpackDev = require('./webpack-dev.config');
+const webpackBuild = require('./webpack-build.config');
 
-module.exports = {
+const TARGET = process.env.npm_lifecycle_event;
+
+const common = {
   context: path.resolve(__dirname, './src'),
   entry: {
     app: ['./index.js'],
@@ -13,9 +18,6 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.less$/,
-      use: ['style-loader', 'css-loader', 'less-loader'],
-    }, {
       test: /\.html$/,
       use: ['html-loader'],
     }, {
@@ -45,11 +47,6 @@ module.exports = {
       use: ['file-loader'],
     }],
   },
-  devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-  },
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
@@ -62,3 +59,12 @@ module.exports = {
     }),
   ],
 };
+
+switch (TARGET) {
+  case 'dev':
+    module.exports = webpackMerge(common, webpackDev.rules);
+    break;
+  default:
+    module.exports = webpackMerge(common, webpackBuild.rules);
+    break;
+}
