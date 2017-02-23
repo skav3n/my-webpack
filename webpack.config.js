@@ -2,10 +2,9 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpackMerge = require('webpack-merge');
-const webpackDev = require('./webpack-dev.config');
-const webpackBuild = require('./webpack-build.config');
 
-const TARGET = process.env.npm_lifecycle_event;
+const config = path.join(__dirname, process.env.NODE_ENV);
+const webpackConfig = require(config);
 
 const common = {
   context: path.resolve(__dirname, './src'),
@@ -60,11 +59,4 @@ const common = {
   ],
 };
 
-switch (TARGET) {
-  case 'dev':
-    module.exports = webpackMerge(common, webpackDev.rules);
-    break;
-  default:
-    module.exports = webpackMerge(common, webpackBuild.rules);
-    break;
-}
+module.exports = webpackMerge(common, webpackConfig.rules);

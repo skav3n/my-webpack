@@ -5,7 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const extractLESS = new ExtractTextPlugin('style.css');
 
-exports.rules = (function() {
+exports.rules = (() => {
   return {
     module: {
       rules: [{

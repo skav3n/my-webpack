@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 
-exports.rules = (function() {
+exports.rules = (() => {
   return {
     module: {
       rules: [{
